@@ -1,0 +1,55 @@
+name: CI / Deploy (test)
+
+# Pipeline for the TEST frontend (test-ambassador.bheuni.uk), co-located on the
+# same box as prod but a separate process, built with the TEST api url baked in.
+# CI runs on every PR and push to develop. DEPLOY-to-TEST is AUTOMATIC on merge
+# to develop, plus a manual "Run workflow" button. Prod is a SEPARATE workflow
+# (deploy.yml on main) and stays manual-only: this file never touches prod.
+on:
+  pull_request:
+    branches: [develop]
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-test
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    name: Build & typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      # Full Next build (also runs TypeScript). NEXT_PUBLIC_* are unset here; that
+      # only affects the bundle's baked URLs, not build validity. The real test
+      # build happens on the server via deploy-test.sh (bakes the TEST urls).
+      - run: npm run build
+
+  deploy-test:
+    name: Deploy to TEST
+    needs: ci                                     # build must pass before we ship
+    # Auto-deploy to TEST on merge to develop; also runnable via the manual button.
+    # Never on pull_request (PRs run the build check only).
+    if: github.ref == 'refs/heads/develop' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH (runs ./deploy-test.sh on the server)
+        env:
+          DEPLOY_SHA: ${{ github.sha }}
+          SSH_KEY: ${{ secrets.TEST_SSH_KEY }}
+          SSH_HOST: ${{ secrets.TEST_SSH_HOST }}
+          SSH_USER: ${{ secrets.TEST_SSH_USER }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
+            "deploy-test ${DEPLOY_SHA}"

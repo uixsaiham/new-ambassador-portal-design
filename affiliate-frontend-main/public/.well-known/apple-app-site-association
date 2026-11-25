@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TU96D45469.com.bheuni.ambassadorapp",
+        "paths": ["/dashboard", "/dashboard/referrals", "/dashboard/wallet"]
+      }
+    ]
+  }
+}

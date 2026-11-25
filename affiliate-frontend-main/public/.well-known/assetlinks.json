@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.bheuni.ambassadorapp",
+      "sha256_cert_fingerprints": [
+        "50:A3:3E:F6:95:42:CE:CA:EA:30:41:DB:13:88:B0:FE:3E:6A:F4:82:B2:10:B6:2D:EB:91:1E:EE:91:BB:50:62"
+      ]
+    }
+  }
+]

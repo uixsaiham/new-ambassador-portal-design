@@ -1,0 +1,1002 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+}
+
+body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+  font-family: var(--font-jakarta), var(--font-bengali), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Custom styles ported from legacy templates */
+.student-card, .admin-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #94a3b8;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #f8fafc;
+}
+
+/* Student Active Link */
+.student-nav-link-active {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Admin Active Link */
+.admin-nav-link-active {
+    background: rgba(243, 113, 36, 0.15);
+    color: #f97316;
+    border: 1px solid rgba(243, 113, 36, 0.3);
+}
+
+.card-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+}
+
+.student-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.admin-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.student-btn-sm, .admin-btn-sm {
+    padding: 0.375rem;
+    border-radius: 8px;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s;
+}
+
+.student-btn-sm:hover, .admin-btn-sm:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+}
+
+.student-input {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.student-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Select variant — native <select> ignores the input light-mode overrides and
+   renders the raw OS control, so it gets its own class + explicit light styling. */
+.student-select {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.student-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.student-select option {
+    background: #0f172a;
+    color: #f8fafc;
+}
+
+.admin-input {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.admin-input:focus {
+    border-color: #f97316;
+    box-shadow: 0 0 0 2px rgba(243, 113, 36, 0.2);
+}
+
+/* Native date pickers: match the calendar widget + icon to the active theme so
+   they stay legible in both. Base is the dark admin theme; .light flips them. */
+input[type="date"].admin-input { color-scheme: dark; }
+.light input[type="date"].admin-input { color-scheme: light; }
+
+/* Multi-select filter dropdown. Fixed cream panel with dark text in BOTH themes
+   (not inverted by the .light overrides). The closed button label is white to
+   match the dark .admin-input filter pills. */
+.filter-menu {
+    background: #faf3e3; /* cream */
+    border: 1px solid rgba(15, 23, 42, 0.12);
+}
+.filter-menu-item {
+    color: #1e293b;
+}
+.filter-menu-item:hover,
+.filter-menu-clear:hover {
+    background: rgba(15, 23, 42, 0.06);
+}
+.filter-menu-clear {
+    color: #475569;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+.filter-btn-label,
+.filter-btn-label--all {
+    color: #f8fafc;
+}
+/* Checkbox box inside the cream panel — dark border so it's visible on cream. */
+.filter-check {
+    border: 1.5px solid #94a3b8;
+    background: #ffffff;
+}
+.filter-check--checked {
+    border-color: #f97316;
+    background: #f97316;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-block;
+}
+
+.tier-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+/* ── Legacy Landing Page Design Tokens & Styles ── */
+:root {
+  --primary: #263A7F;
+  --orange: #F37124;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeUp    {from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmerO  {0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes spinRing  {to{transform:rotate(360deg)}}
+@keyframes float3D {
+  0%, 100% { transform: translateY(0px) rotateY(5deg) rotateX(0deg); }
+  50% { transform: translateY(-15px) rotateY(-5deg) rotateX(5deg); }
+}
+@keyframes float3D-rev {
+  0%, 100% { transform: translateY(0px) rotateY(-5deg) rotateX(0deg); }
+  50% { transform: translateY(10px) rotateY(5deg) rotateX(-5deg); }
+}
+@keyframes scrollDot {0%{transform:translateY(0);opacity:1}100%{transform:translateY(16px);opacity:0}}
+@keyframes blobMorph {
+  0%,100%{border-radius:40% 60% 60% 40%/40% 40% 60% 60%}
+  33%{border-radius:60% 40% 70% 30%/50% 60% 40% 50%}
+  66%{border-radius:30% 70% 40% 60%/60% 30% 70% 40%}
+}
+@keyframes pulseGlow {
+  0%,100%{box-shadow:0 0 0 0 rgba(243,113,36,0.3)}
+  50%{box-shadow:0 0 0 12px rgba(243,113,36,0)}
+}
+@keyframes moveBg {
+  from { background-position: 0 0; }
+  to   { background-position: 100px 100px; }
+}
+
+/* ── Scroll-reveal ── */
+.reveal     {opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in  {opacity:1;transform:none}
+.reveal-l   {opacity:0;transform:translateX(-36px);transition:opacity .65s ease,transform .65s ease}
+.reveal-l.in{opacity:1;transform:none}
+.reveal-r   {opacity:0;transform:translateX(36px); transition:opacity .65s ease,transform .65s ease}
+.reveal-r.in{opacity:1;transform:none}
+.reveal-s   {opacity:0;transform:scale(.9);transition:opacity .55s ease,transform .55s ease}
+.reveal-s.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.40s}
+
+/* ── Typography ── */
+.shimmer-orange{
+  background:linear-gradient(90deg,var(--primary) 0%,var(--orange) 45%,var(--primary) 60%,var(--orange) 80%,var(--primary) 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shimmerO 3.5s linear infinite;
+}
+
+/* ── Ambassador earnings hero banner (marketing) ── */
+.earn-banner{
+  background:linear-gradient(110deg,#F37124 0%,#fb923c 28%,#f59e0b 52%,#F37124 78%,#fb923c 100%);
+  background-size:220% auto;
+  animation:shimmerO 7s linear infinite;
+}
+.earn-banner-shine{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit}
+.earn-banner-shine::after{
+  content:"";position:absolute;top:0;left:0;height:100%;width:45%;
+  background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,.38) 50%,transparent 100%);
+  transform:skewX(-18deg) translateX(-260%);
+  animation:earnShine 5s ease-in-out infinite;
+}
+@keyframes earnShine{
+  0%{transform:skewX(-18deg) translateX(-260%)}
+  55%,100%{transform:skewX(-18deg) translateX(420%)}
+}
+
+/* ── iPhone gift promo (dashboard banner + modal) ──────────────────────
+   The dashboard's .light theme force-flips slate-800/900/950 backgrounds
+   and .text-white/.text-slate-* to light values (with !important), which
+   makes dark promo surfaces unreadable in light mode. So the promo paints
+   ALL of its colours with inline styles (fixed hex) that the theme cannot
+   touch; only hover/animation helpers live here, under custom class names
+   the theme does not target. */
+.promo-banner        { transition:border-color .2s ease, box-shadow .2s ease; }
+.promo-banner:hover  { border-color:rgba(251,146,60,.55) !important; }
+.promo-cta           { transition:background-color .2s ease; }
+.promo-banner:hover .promo-cta { background:#fb923c !important; }
+.promo-dismiss       { transition:color .2s ease; }
+.promo-dismiss:hover { color:#ffffff !important; }
+.promo-btn-primary   { transition:background-color .2s ease; }
+.promo-btn-primary:hover   { background:#fb923c !important; }
+.promo-btn-secondary { transition:background-color .2s ease; }
+.promo-btn-secondary:hover { background:rgba(255,255,255,.18) !important; }
+.promo-icon-btn      { transition:background-color .2s ease; }
+.promo-icon-btn:hover      { background:rgba(0,0,0,.6) !important; }
+
+/* Modal entrance: gentle fade for the scrim, a soft pop for the card. */
+@keyframes promoFade { from{opacity:0} to{opacity:1} }
+@keyframes promoPop  { from{opacity:0; transform:translateY(10px) scale(.97)} to{opacity:1; transform:none} }
+.promo-fade { animation:promoFade .22s ease-out both; }
+.promo-pop  { animation:promoPop .34s cubic-bezier(.22,1,.36,1) both; }
+@media (prefers-reduced-motion: reduce){ .promo-fade, .promo-pop { animation:none; } }
+
+/* ── NAV ── */
+#nav{transition:all .35s ease}
+#nav.sticky{box-shadow:0 2px 24px rgba(38,58,127,.10);background:rgba(255,255,255,.97) !important}
+
+/* ── Hero background ── */
+.hero-section{
+  background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.7) 45%, rgba(38,58,127,0.2) 100%), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
+  background-attachment: fixed;
+  position:relative;
+}
+@media (max-width:1023px){
+  .hero-section{ background-attachment: scroll; }
+}
+
+/* ── Cards ── */
+.card{
+  background:rgba(255,255,255,0.65);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.8);
+  border-radius:8px;
+  box-shadow:0 8px 32px rgba(38,58,127,.05), inset 0 0 0 1px rgba(255,255,255,0.5);
+  transition:transform .4s cubic-bezier(0.175,0.885,0.32,1.275),box-shadow .4s ease,border-color .3s ease;
+  position:relative;
+}
+.card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 24px 48px rgba(38,58,127,.12),inset 0 0 0 1px rgba(255,255,255,1);border-color:#fff;z-index:10}
+.card-orange:hover{border-color:#fff;box-shadow:0 24px 48px rgba(243,113,36,.15),inset 0 0 0 1px rgba(255,255,255,1)}
+
+.card-dark{
+  background:rgba(15,23,42,0.65);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:8px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,0.05);
+  transition:transform .4s cubic-bezier(0.175,0.885,0.32,1.275),box-shadow .4s ease,border-color .3s ease;
+}
+.card-dark:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 24px 48px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.3);z-index:10}
+
+/* ── Buttons ── */
+.btn-navy{
+  background:var(--primary);color:#fff;font-weight:700;
+  border-radius:8px;transition:all .3s ease;position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-navy::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .3s}
+.btn-navy:hover::after{opacity:1}
+.btn-navy:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(38,58,127,.35)}
+
+.btn-orange{
+  background:var(--orange);color:#fff;font-weight:700;
+  border-radius:8px;transition:all .3s ease;position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-orange:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(243,113,36,.4);background:#e5631a}
+
+.btn-ghost{
+  border:2px solid #dde3f5;color:var(--primary);font-weight:600;
+  border-radius:8px;transition:all .3s ease;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-ghost:hover{border-color:var(--primary);background:#f0f3fb;transform:translateY(-2px)}
+
+/* ── Separator ── */
+.sep{height:1px;background:linear-gradient(90deg,transparent,#dde3f5 30%,#c8d0ef 50%,#dde3f5 70%,transparent)}
+
+/* ── Tier headers ── */
+.tier-bronze {background:linear-gradient(135deg,#a0622a,#d4882c,#f0b060)}
+.tier-silver {background:linear-gradient(135deg,#6b6b6b,#a8a8a8,#d4d4d4)}
+.tier-gold   {background:linear-gradient(135deg,#8a6200,#c8a412,#f5d058)}
+.tier-plat   {background:linear-gradient(135deg,#3a3a5e,#6060a0,#9090c8)}
+
+/* ── Progress ── */
+.prog-bar{width:0;transition:width 1.6s cubic-bezier(.4,0,.2,1)}
+
+/* ── Pill badge ── */
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border-radius:8px;padding:5px 14px}
+
+/* ── Phone mockup ── */
+.phone-shell{
+  background:linear-gradient(145deg,#1c1c2e,#0e0e1c);
+  box-shadow:0 40px 80px rgba(0,0,0,.22),0 0 0 1px rgba(255,255,255,.06),inset 0 0 0 1px rgba(255,255,255,.04);
+}
+.phone-screen-bg{background:linear-gradient(160deg,#263A7F,#1a2560)}
+
+/* ── Form ── */
+.f-input{
+  width:100%;background:#f8f9fe;border:1.5px solid #e0e6f5;
+  border-radius:8px;padding:13px 16px;font-size:.875rem;color:#1a2035;
+  outline:none;transition:all .25s ease;font-family:inherit;
+  -webkit-appearance:none;appearance:none;
+}
+.f-input::placeholder{color:#9ca8c0}
+.f-input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(38,58,127,.1)}
+
+/* ── Float animations ── */
+.float-a{animation:float3D 6s ease-in-out infinite}
+.float-b{animation:float3D-rev 7s ease-in-out infinite;animation-delay:.8s}
+.float-c{animation:float3D 5.5s ease-in-out infinite;animation-delay:1.4s}
+.float-d{animation:float3D-rev 6.5s ease-in-out infinite;animation-delay:.3s}
+
+/* ── Scroll indicator ── */
+.scroll-box{width:26px;height:44px;border:2px solid rgba(38,58,127,.25);border-radius:8px;display:flex;align-items:flex-start;justify-content:center;padding-top:5px}
+.scroll-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);animation:scrollDot 2s ease infinite}
+
+/* Hero float cards */
+.hero-floats {
+  perspective: 1500px;
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease-out;
+}
+#hero-badge {
+  transition: transform 0.2s ease-out;
+}
+
+/* Mobile drawer */
+#drawer{transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);background:#fff;border-left:1px solid #e8edf8;box-shadow:-8px 0 40px rgba(38,58,127,.12)}
+#drawer.open{transform:translateX(0)}
+#overlay{opacity:0;pointer-events:none;transition:opacity .35s ease}
+#overlay.open{opacity:1;pointer-events:all}
+.ham span{display:block;width:20px;height:2px;background:var(--primary);border-radius:8px;transition:all .3s}
+.ham.x span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.ham.x span:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham.x span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* Stat number responsive */
+.big-num{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;line-height:1}
+
+/* Section alt bg */
+.bg-tint{background:#f6f8fe}
+.bg-white-sec{background:#ffffff}
+.animated-grid {
+  background-image:
+    linear-gradient(rgba(38,58,127,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(38,58,127,.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+  animation: moveBg 7s linear infinite;
+  position: relative;
+  z-index: 0;
+}
+
+/* Orange accent dot */
+.dot-orange{width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0;animation:pulseGlow 2s infinite}
+
+/* Icon box */
+.icon-box{width:52px;height:52px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+
+/* Level card accent line */
+.accent-line{height:4px;border-radius:8px 8px 0 0}
+
+/* ── Light Mode Color System ── */
+.light {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+.light body {
+  background-color: #f8fafc !important;
+  color: #334155 !important;
+}
+
+/* Base Overrides */
+.light, .light * {
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+/* Layout */
+.light aside {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.light header {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.light main {
+  background-color: #f8fafc !important;
+}
+
+/* Nav Link */
+.light .nav-link {
+  color: #475569 !important;
+}
+
+.light .nav-link:hover {
+  background: rgba(15, 23, 42, 0.04) !important;
+  color: #0f172a !important;
+}
+
+.light .admin-nav-link-active {
+  background: rgba(243, 113, 36, 0.1) !important;
+  color: #e65100 !important;
+  border: 1px solid rgba(243, 113, 36, 0.2) !important;
+}
+
+/* Cards */
+.light .admin-card, .light .student-card, .light .card-dark {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+}
+
+.light .admin-card:hover, .light .student-card:hover, .light .card-dark:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+/* Inputs */
+.light input.admin-input, 
+.light input.student-input, 
+.light input.f-input,
+.light input[type="text"],
+.light input[type="email"],
+.light input[type="password"] {
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Both class names are in use for selects (student-select and student-input).
+   Only student-select was covered here, so any <select class="student-input">
+   (e.g. the counsellor dropdown on Profile) stayed dark in light mode while
+   every input around it went white. */
+.light select.student-select,
+.light select.student-input {
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.light select.student-select option,
+.light select.student-input option {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.light input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.light input.admin-input:focus {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 3px rgba(243, 113, 36, 0.1) !important;
+}
+
+/* Typography & Headings */
+.light h1, .light h2, .light h3, .light h4, .light h5, .light h6,
+.light .text-white, .light .text-slate-100 {
+  color: #0f172a !important;
+}
+
+.light p, .light .text-slate-200, .light .text-slate-300 {
+  color: #1e293b !important; /* Slate 800 - high contrast dark gray */
+}
+
+.light .text-slate-400 {
+  color: #334155 !important; /* Slate 700 - high contrast dark gray */
+}
+
+.light .text-slate-500 {
+  color: #475569 !important; /* Slate 600 - high contrast gray */
+}
+
+.light .text-slate-600 {
+  color: #5b6b80 !important;
+}
+
+/* Refer & Earn status tiles: the pale -400 accent colours (tuned for the dark
+   theme) wash out on the light background, so darken them in light mode only —
+   dark mode keeps the bright -400. Mirrors the slate overrides above. */
+.light .text-blue-400    { color: #1d4ed8 !important; }
+.light .text-sky-400     { color: #0369a1 !important; }
+.light .text-emerald-400 { color: #047857 !important; }
+.light .text-red-400     { color: #dc2626 !important; }
+.light .text-violet-400  { color: #6d28d9 !important; }
+.light .text-purple-400  { color: #7e22ce !important; }
+
+/* Table */
+.light table thead {
+  background-color: #e2e8f0 !important;
+  color: #1e293b !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+}
+
+.light table thead th {
+  color: #1e293b !important;
+}
+
+.light table tbody tr {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.04) !important;
+}
+
+.light table tbody tr:hover {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+.light table td {
+  color: #1e293b !important;
+}
+
+.light table td.font-bold {
+  color: #0f172a !important;
+}
+
+/* Badges & Accents */
+.light .bg-white\/5 {
+  background-color: #ffffff !important;
+}
+
+.light .border-white\/5, .light .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Specific component fixes */
+.light .bg-slate-900\/40,
+.light .bg-slate-900\/20,
+.light .bg-slate-900\/30,
+.light .bg-slate-900\/60,
+.light .bg-slate-950\/20,
+.light .bg-slate-950\/30 {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+.light .border-slate-800\/80 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.light .bg-\[\#0d1526\] {
+  background-color: #ffffff !important;
+}
+
+.light hr.border-slate-800\/80 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Tier and Status Overrides in Light Mode */
+.light .bg-purple-500\/20 {
+  background-color: #f3e8ff !important;
+  color: #6b21a8 !important;
+  border-color: #e9d5ff !important;
+}
+.light .bg-yellow-500\/20 {
+  background-color: #fef9c3 !important;
+  color: #854d0e !important;
+  border-color: #fef08a !important;
+}
+.light .bg-slate-400\/20 {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #e2e8f0 !important;
+}
+.light .bg-amber-600\/20 {
+  background-color: #ffedd5 !important;
+  color: #9a3412 !important;
+  border-color: #fed7aa !important;
+}
+.light .bg-emerald-500\/20 {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
+  border-color: #a7f3d0 !important;
+}
+.light .bg-red-500\/20 {
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+  border-color: #fca5a5 !important;
+}
+.light .bg-orange-500\/20 {
+  background-color: #fff7ed !important;
+  color: #c2410c !important;
+  border-color: #ffedd5 !important;
+}
+.light .bg-blue-500\/20 {
+  background-color: #dbeafe !important;
+  color: #1e40af !important;
+  border-color: #bfdbfe !important;
+}
+
+/* Dynamic Tier Text & Background overrides for light mode */
+.light .text-yellow-400 {
+  color: #a16207 !important; /* Gold text: dark yellow */
+}
+.light .bg-yellow-400\/10 {
+  background-color: #fef9c3 !important;
+}
+.light .border-yellow-400\/20 {
+  border-color: #fef08a !important;
+}
+
+.light .text-cyan-400, .light .text-cyan-300 {
+  color: #0e7490 !important; /* Platinum text: dark cyan */
+}
+.light .bg-cyan-400\/10 {
+  background-color: #ecfeff !important;
+}
+.light .border-cyan-400\/20 {
+  border-color: #cffafe !important;
+}
+
+.light .text-amber-500 {
+  color: #b45309 !important; /* Bronze text: dark amber */
+}
+.light .bg-amber-500\/10 {
+  background-color: #fff7ed !important;
+}
+.light .border-amber-500\/20 {
+  border-color: #ffedd5 !important;
+}
+
+.light .text-slate-300 {
+  color: #1e293b !important; /* Silver text: dark slate */
+}
+.light .bg-slate-300\/10 {
+  background-color: #f8fafc !important;
+}
+.light .border-slate-300\/20 {
+  border-color: #e2e8f0 !important;
+}
+
+.light .text-emerald-400 {
+  color: #15803d !important; /* Emerald text */
+}
+.light .bg-emerald-400\/5, .light .bg-emerald-400\/10 {
+  background-color: #d1fae5 !important;
+}
+.light .border-emerald-500\/10 {
+  border-color: #a7f3d0 !important;
+}
+
+/* Text override helpers */
+.light .text-slate-450 {
+  color: #334155 !important;
+}
+
+.light .text-blue-450 {
+  color: #1d4ed8 !important;
+}
+
+.light .text-orange-450 {
+  color: #ea580c !important;
+}
+
+/* Force Light Page Backgrounds */
+.light.bg-slate-950,
+.light .bg-slate-950,
+.light.bg-slate-900,
+.light .bg-slate-900,
+.light.bg-slate-800,
+.light .bg-slate-800,
+.light.bg-slate-950\/80,
+.light .bg-slate-950\/80,
+.light.bg-slate-900\/40,
+.light .bg-slate-900\/40,
+.light.bg-slate-950\/40,
+.light .bg-slate-950\/40,
+.light.bg-slate-950\/60,
+.light .bg-slate-950\/60,
+.light.bg-slate-950\/50,
+.light .bg-slate-950\/50,
+.light.bg-slate-900\/20,
+.light .bg-slate-900\/20,
+.light.bg-slate-900\/30,
+.light .bg-slate-900\/30,
+.light.bg-slate-900\/60,
+.light .bg-slate-900\/60,
+.light.bg-slate-950\/20,
+.light .bg-slate-950\/20,
+.light.bg-slate-950\/30,
+.light .bg-slate-950\/30,
+.light.bg-amber-950\/40,
+.light .bg-amber-950\/40,
+.light.bg-slate-800\/40,
+.light .bg-slate-800\/40,
+.light.bg-yellow-950\/40,
+.light .bg-yellow-950\/40,
+.light.bg-cyan-950\/40,
+.light .bg-cyan-950\/40 {
+  background-color: #f1f5f9 !important;
+  background-image: none !important;
+}
+
+/* Ambient glow removal in light mode */
+.light .bg-blue-500\/10,
+.light .bg-orange-500\/10,
+.light .from-orange-950\/20 {
+  display: none !important;
+}
+
+.light .student-nav-link-active {
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #1d4ed8 !important;
+  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+}
+
+/* ── Locked / read-only fields ────────────────────────────────────────────
+   A disabled input must LOOK disabled in BOTH themes. The light-mode input
+   rules above force white background, slate border and near-black text onto
+   every input with !important, which silently wipes any Tailwind dimming we
+   put on a locked field. So locked fields get their own class, declared AFTER
+   those rules (equal specificity, later wins) and reinforced with opacity and
+   cursor, which no colour rule can defeat.
+   Applies to input, select and textarea so every locked control matches. */
+.field-locked,
+input.field-locked,
+select.field-locked,
+textarea.field-locked {
+  background-color: #0b1220 !important;
+  border: 1.5px solid rgba(148, 163, 184, 0.22) !important;
+  color: #64748b !important;
+  cursor: not-allowed !important;
+  opacity: .7;
+}
+.light .field-locked,
+.light input.field-locked,
+.light select.field-locked,
+.light textarea.field-locked {
+  background-color: #e9edf3 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #6b7280 !important;
+  cursor: not-allowed !important;
+  opacity: .8;
+}
+
+/* ---------------- REFERRAL BANNER (ported from bheuni.uk Referral section) ---------------- */
+.ref2-section {
+  --ref-fg1: #0c1b3e;
+  --ref-fg2: #3c4663;
+  --ref-fg3: #6b7a99;
+  --ref-orange: #e87723;
+  --ref-orange-light: #f5945a;
+  --ref-orange-tint: #fef1e6;
+  --ref-success: #18a06d;
+  --ref-off-white: #f7f8fc;
+  --ref-border: #e4e8f2;
+  --ref-border-strong: #cdd5e6;
+  --ref-shadow-sm: 0 1px 2px rgba(12,27,62,.06), 0 1px 3px rgba(12,27,62,.08);
+  --ref-shadow-md: 0 4px 12px rgba(12,27,62,.08), 0 2px 4px rgba(12,27,62,.04);
+  --ref-shadow-lg: 0 12px 32px rgba(12,27,62,.12), 0 4px 8px rgba(12,27,62,.06);
+  --ref-shadow-orange: 0 8px 24px rgba(232,119,35,.32);
+  --ref-ease-out: cubic-bezier(.16, 1, .3, 1);
+  padding: 104px 0;
+  position: relative;
+  background: var(--ref-off-white);
+  border-top: 1px solid rgba(226, 232, 240, 0.6);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+  text-align: left;
+}
+.ref2-container { max-width: 1280px; margin: 0 auto; padding: 0 24px; width: 100%; }
+
+.ref2-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.ref2-intro { position: sticky; top: 100px; }
+.ref2-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-weight: 700; font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ref-orange); background: var(--ref-orange-tint); padding: 6px 13px; border-radius: 8px; margin-bottom: 18px;
+}
+.ref2-title {
+  font-weight: 800; font-size: clamp(26px, 2.6vw, 32px);
+  line-height: 1.2; letter-spacing: -.015em; color: var(--ref-fg1); margin: 0 0 14px;
+}
+.ref2-text { font-size: 15.5px; line-height: 1.65; color: var(--ref-fg2); margin: 0; }
+.ref2-text b { color: var(--ref-fg1); font-weight: 700; }
+.ref2-cta { margin-top: 28px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.ref2-note { font-size: 13px; line-height: 1.5; color: var(--ref-fg3); max-width: 280px; }
+
+.ref2-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 16px 28px; border-radius: 8px;
+  font-weight: 600; font-size: 16px; line-height: 1;
+  background: var(--ref-orange); color: #fff; box-shadow: var(--ref-shadow-orange);
+  transition: transform .25s var(--ref-ease-out), box-shadow .25s var(--ref-ease-out), background .25s ease;
+}
+.ref2-btn:hover {
+  background: var(--ref-orange-light);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(232, 119, 35, .4);
+}
+.ref2-btn i { font-size: 15px; transition: transform .25s var(--ref-ease-out); }
+.ref2-btn:hover i { transform: translateX(3px); }
+
+.ref2-timeline { position: relative; display: flex; flex-direction: column; gap: 28px; }
+.ref2-timeline-line {
+  position: absolute;
+  left: 25px;
+  top: 26px;
+  bottom: 26px;
+  width: 2px;
+  background: var(--ref-border);
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 1s var(--ref-ease-out);
+}
+.ref2-section.in .ref2-timeline-line { transform: scaleY(1); }
+
+.ref2-step { position: relative; display: flex; gap: 24px; }
+.ref2-marker {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  background: #fff;
+  border: 2px solid var(--ref-border);
+  color: var(--ref-fg2);
+  box-shadow: var(--ref-shadow-sm);
+}
+.ref2-marker-feature { background: var(--ref-orange); border-color: var(--ref-orange); color: #fff; box-shadow: var(--ref-shadow-orange); }
+
+.ref2-step-card {
+  flex: 1;
+  min-width: 0;
+  background: var(--ref-off-white);
+  border: 1px solid var(--ref-border);
+  border-radius: 8px;
+  padding: 24px 26px;
+  transition: transform 0.3s var(--ref-ease-out), box-shadow 0.3s var(--ref-ease-out), border-color 0.3s var(--ref-ease-out);
+}
+.ref2-step:hover .ref2-step-card { transform: translateY(-3px); box-shadow: var(--ref-shadow-md); border-color: var(--ref-border-strong); }
+.ref2-step-feature .ref2-step-card { background: #fff; border-color: var(--ref-orange-tint); box-shadow: var(--ref-shadow-sm); }
+.ref2-step-feature:hover .ref2-step-card { box-shadow: var(--ref-shadow-lg); }
+
+.ref2-step-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 10px; }
+.ref2-tag {
+  font-weight: 700; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ref-fg2); background: #fff; border: 1px solid var(--ref-border); padding: 4px 10px; border-radius: 8px; white-space: nowrap;
+}
+.ref2-tag-feature { color: var(--ref-orange); background: var(--ref-orange-tint); border-color: transparent; }
+
+.ref2-step-reward { text-align: right; flex: none; }
+.ref2-reward-num {
+  display: block;
+  font-weight: 800; font-size: 26px; letter-spacing: -.01em;
+  color: var(--ref-fg1); font-variant-numeric: tabular-nums;
+}
+.ref2-reward-num-feature { color: var(--ref-orange); }
+.ref2-reward-prefix { font-size: 12px; font-weight: 600; color: var(--ref-fg3); }
+.ref2-reward-label { display: block; font-size: 11.5px; color: var(--ref-fg3); margin-top: 2px; }
+
+.ref2-step-title { font-weight: 700; font-size: 19px; color: var(--ref-fg1); margin: 0 0 14px; }
+
+.ref2-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.ref2-list li {
+  display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; line-height: 1.5; color: var(--ref-fg2);
+  opacity: 0; transform: translateY(6px);
+  animation: refMiniIn 0.5s var(--ref-ease-out) forwards;
+  animation-play-state: paused;
+}
+.ref2-section.in .ref2-list li { animation-play-state: running; }
+@keyframes refMiniIn { to { opacity: 1; transform: none; } }
+.ref2-list li i { color: var(--ref-success); flex: none; margin-top: 4px; font-size: 12px; }
+
+@media (max-width: 900px) {
+  .ref2-section { padding: 72px 0; }
+  .ref2-layout { grid-template-columns: 1fr; gap: 36px; }
+  .ref2-intro { position: static; }
+}
+@media (max-width: 560px) {
+  .ref2-container { padding: 0 16px; }
+  .ref2-step { gap: 14px; }
+  .ref2-marker { width: 40px; height: 40px; font-size: 15px; }
+  .ref2-timeline-line { left: 19px; }
+  .ref2-step-card { padding: 18px 18px; }
+  .ref2-step-top { flex-direction: column; }
+  .ref2-step-reward { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ref2-list li { opacity: 1; transform: none; animation: none; }
+  .ref2-timeline-line { transform: none; transition: none; }
+}
+
+/* Shared native dropdown geometry across public, ambassador and admin forms. */
+.app-select-control { position:relative; display:inline-grid; vertical-align:middle; width:100%; min-width:0; align-items:center; }
+.app-select-control > select.app-select { display:block; width:100%; min-width:0; box-sizing:border-box; appearance:none; -webkit-appearance:none; background-image:none!important; padding-inline-start:14px!important; padding-inline-end:42px!important; text-align:start; text-overflow:ellipsis; cursor:pointer; }
+.app-select-control > .app-select-chevron { position:absolute; inset-inline-end:14px; top:50%; transform:translateY(-50%); font-size:16px; color:#858397; pointer-events:none; margin:0!important; line-height:1; }
+.app-select-control:has(>select:disabled) > .app-select-chevron { opacity:.45; }
+.app-select-control:focus-within > .app-select-chevron { color:#293171; }
+.auth-counsellor-trigger { padding-inline:14px; gap:12px; }
+.auth-counsellor-trigger > span { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.auth-counsellor-trigger > .app-icon:last-child { font-size:16px; margin-inline-start:auto; }
+
+/* Shared corner size for default rounded utilities. */
+.rounded { border-radius:8px; }
+
+/* Bengali headings need lighter strokes and natural glyph spacing. */
+[lang="bn"] :is(h1,h2,h3,h4,h5,h6) {
+  font-weight:600!important;
+  letter-spacing:normal!important;
+  line-height:1.5;
+  font-synthesis:none;
+}

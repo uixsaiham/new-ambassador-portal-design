@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+venv/
+.venv/
+test.db
+*.db
+affiliate.db
+uploads/
+
+
+# Database backups
+*.bak
+*.db.bak*
+# In-place edit backups (e.g. foo.py.bak.<tag>) — use git history, never commit these
+*.bak.*
+# SQLite WAL/SHM + Litestream replication runtime artifacts (never commit)
+*.db-wal
+*.db-shm
+*-litestream/
+
+.python/
+
+.venv312/

@@ -1,0 +1,41 @@
+.referrals-page { width:100%; color:#292c43; }
+.referrals-page-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; margin-bottom:34px; }
+.portal .referrals-page-heading h1 { color:#282a40; font-size:36px; font-weight:800; letter-spacing:-1.4px; line-height:1.3; margin-bottom:10px; }
+.referrals-page-heading p { font-size:14px; line-height:1.8; color:#918b99; }
+.referrals-add { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 18px; border-radius:8px; background:#293171; color:#fff; font-size:14px; font-weight:700; white-space:nowrap; }
+.referrals-add:hover { background:#20285d; }
+.referrals-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); background:#fff; border:1px solid #e8e5e0; border-radius:8px; box-shadow:0 2px 6px rgb(41 44 67 / 2%); padding:24px; margin-bottom:34px; }
+.referrals-summary>div { padding:0 24px; border-left:1px solid #e8e5e0; }
+.referrals-summary>div:first-child { padding-left:0; border-left:0; }
+.referrals-summary p { color:#99919f; font-size:12px; margin-bottom:12px; }
+.referrals-summary strong { font-size:36px; line-height:1.3; letter-spacing:-1px; font-weight:800; }
+.referrals-summary .referrals-rewards { color:#f26925; }
+.referrals-toolbar { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:26px; }
+.referrals-filters { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+.referrals-filters button { display:flex; align-items:center; gap:6px; padding:10px 12px; color:#9b93a3; font-size:14px; border-radius:8px; }
+.referrals-filters button.is-active { background:#eeecf5; color:#293171; font-weight:700; }
+.referrals-filters button span { font-size:11px; padding:1px 4px; background:#dfdcea; border-radius:8px; }
+.referrals-search { display:flex; align-items:center; gap:8px; border:1px solid #e8e5e0; background:#fff; padding:11px 13px; border-radius:8px; color:#a39aaa; }
+.referrals-search i { font-size:12px; }
+.referrals-search input { width:155px; min-width:0; font:inherit; font-size:14px; background:transparent; color:#292c43; outline:none; }
+.referrals-search:focus-within { border-color:#7b83b2; box-shadow:0 0 0 3px #2832700d; }
+.referrals-page .latest-referrals { margin-top:0; padding-top:0; border-top:0; }
+.referrals-page .latest-table th { padding-top:14px; padding-bottom:18px; }
+.referrals-page .latest-table td { padding-top:23px; padding-bottom:23px; }
+.referrals-page .latest-table th:first-child { width:50%; }
+.referrals-page .latest-table th:nth-child(2) { width:16%; }
+.referrals-page .latest-table th:nth-child(3) { width:21%; }
+.referrals-state { padding:48px 20px; text-align:center; color:#918b99; font-size:14px; }
+.referrals-state button { color:#293171; text-decoration:underline; }
+.referrals-message { padding:12px 16px; border-radius:8px; margin-bottom:20px; font-size:13px; }
+.referrals-message.message-success { background:#e9f4ee; color:#3a795c; }
+.referrals-message.message-error { background:#fbecea; color:#aa514c; }
+.referral-create-dialog { width:680px; max-width:calc(100vw - 32px); max-height:calc(100dvh - 32px); margin:auto; padding:28px; background:#faf8f6; color:#292c43; border:0; border-radius:8px; }
+.referral-create-dialog::backdrop { background:#25283e66; backdrop-filter:blur(5px); }
+.referral-create-close { position:absolute; top:12px; right:20px; font-size:26px; color:#918b99; }
+.referral-create-dialog .student-card { background:transparent; padding:0; border:0; box-shadow:none; margin-bottom:0; }
+.referral-create-dialog h2 { color:#292c43; font-size:24px; font-weight:800; margin-bottom:24px; }
+.referral-create-dialog .student-input { background:#fff; border:1px solid #e2dce7; color:#292c43; }
+.referral-create-dialog .student-btn { background:#293171; }
+@media(max-width:800px) { .referrals-toolbar { align-items:flex-start; flex-direction:column; gap:16px; } .referrals-search { width:100%; } .referrals-search input { width:100%; } }
+@media(max-width:640px) { .portal .referrals-page-heading h1 { font-size:28px; } .referrals-page-heading { flex-wrap:wrap; gap:18px; margin-bottom:24px; } .referrals-summary { grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:24px; } .referrals-summary>div { padding:0 16px; } .referrals-summary>div:nth-child(3) { padding-left:0; border-left:0; } .referrals-summary strong { font-size:30px; } .referrals-summary p { font-size:11px; } .referrals-filters button { padding:8px 9px; font-size:12px; } .referral-create-dialog { padding:24px 20px; } }
