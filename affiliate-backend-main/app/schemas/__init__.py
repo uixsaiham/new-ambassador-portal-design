@@ -23,7 +23,7 @@ class UserCreate(UserBase):
     verification_token: Optional[str] = None
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: str = Field(min_length=1)
     password: str
 
 class UserGoogleLogin(BaseModel):
@@ -33,21 +33,21 @@ class UserGoogleLogin(BaseModel):
 class UserRegisterSimple(BaseModel):
     first_name: str = Field(min_length=1, max_length=100)
     last_name: str
-    university: str = Field(min_length=1, max_length=200)
-    department_year: str = Field(min_length=1, max_length=200)
+    university: Optional[str] = Field(default=None, max_length=200)
+    department_year: Optional[str] = Field(default=None, max_length=200)
     email: EmailStr
     phone: str = Field(min_length=1)
     password: str = Field(min_length=8)
     verification_token: Optional[str] = None
     # Optional CRM counsellor to route this ambassador's leads to. None = "None
     # of the above" → leads land unassigned in the CRM.
-    counsellor_id: str = Field(min_length=1)
-    counsellor_name: str = Field(min_length=1)
+    counsellor_id: Optional[str] = None
+    counsellor_name: Optional[str] = None
     # GDPR: the ambassador accepted the Ambassador & Privacy policies at signup.
     policy_accepted: bool = False
 
 
-    @field_validator("first_name", "university", "department_year", "phone", "counsellor_id", "counsellor_name")
+    @field_validator("first_name", "phone")
     @classmethod
     def require_nonblank(cls, value: str) -> str:
         if not value.strip():
@@ -122,12 +122,13 @@ class ConsentRecord(BaseModel):
 # The full "did they accept + what exactly did they accept" package for legal.
 class ConsentProof(BaseModel):
     user_id: str
-    email: str
+    email: Optional[str] = None
     full_name: str
     consents: List[ConsentRecord]
     documents: List[PolicyDocumentResponse]
 
 class UserResponse(UserBase):
+    email: Optional[EmailStr] = None
     id: str
     university: Optional[str] = None
     department_year: Optional[str] = None
@@ -430,3 +431,18 @@ class AmbassadorStats(BaseModel):
 class PayoutAccountCreate(BaseModel):
     payment_method: PayoutMethod
     details: Dict[str, str]
+
+
+class GooglePhoneSend(BaseModel):
+    verification_token: str = Field(min_length=1)
+    phone: str = Field(min_length=1, max_length=50)
+
+
+class GooglePhoneComplete(BaseModel):
+    verification_token: str = Field(min_length=1)
+    otp: str = Field(pattern=r"^[0-9]{6}$")
+    policy_accepted: bool = False
+
+
+class GoogleDemoRequest(BaseModel):
+    demo_id: Optional[str] = Field(default=None, pattern=r"^[a-f0-9]{32}$")

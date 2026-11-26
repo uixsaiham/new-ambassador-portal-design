@@ -78,11 +78,22 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 ### Email verification
 
+Email is required and must be verified during signup. Counsellor selection is
+optional. Existing accounts without email can still sign in with their mobile
+number and password.
+
 Email signup now requires `/auth/register/initiate` (send code), then
 `/auth/register/verify` (exchange code for `verification_token`). Send that token
 with the profile to `/auth/register/simple`. The legacy `/auth/register` and
 `/auth/register/complete` endpoints also require an unexpired registration token.
-Google sign-in continues to use Google's identity verification.
+Google signup takes the name and verified email from Google, then requires a
+mobile-number popup and SMS verification before issuing a portal session. No
+profile form or password is required. Returning users with a verified number
+enter directly. SMS uses CLICKSEND_USERNAME and CLICKSEND_API_KEY; missing or failed
+delivery returns HTTP 503. LOCAL_SIGNUP_TEST_MODE uses 123456 without sending SMS.
+Codes expire after 10 minutes, allow five incorrect attempts, and have a 60-second
+resend cooldown. Phone changes clear verification. Deploy frontend and backend
+together: /auth/google/complete now accepts verification_token, otp, policy_accepted.
 
 Registration and forgot-password codes expire after 10 minutes, allow five
 incorrect attempts, and have a 60-second resend cooldown. New codes replace old

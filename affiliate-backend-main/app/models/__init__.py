@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 import enum
 from sqlalchemy import Column, String, Integer, Numeric, Enum, ForeignKey, Boolean, DateTime, Text, JSON, UniqueConstraint
 from sqlalchemy.sql import func
@@ -55,10 +56,11 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    email = Column(String, unique=True, index=True, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=True)
     password_hash = Column(String, nullable=False)
     full_name = Column(String(100), nullable=False)
     phone = Column(String(50), nullable=True)
+    phone_verified_at = Column(DateTime, nullable=True)
     university = Column(String(200), nullable=True)
     department_year = Column(String(200), nullable=True)
     # The CRM counsellor this ambassador chose to route their leads to. Null =
@@ -356,3 +358,14 @@ class CounsellorReassignmentLog(Base):
     admin_id = Column(String, nullable=True)
     admin_email = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class GooglePhoneChallenge(Base):
+    __tablename__ = "google_phone_challenges"
+    proof_token = Column(String, primary_key=True)
+    email = Column(String, index=True, nullable=False)
+    phone = Column(String(50), index=True, nullable=False)
+    code_hash = Column(String(64), nullable=False)
+    attempts = Column(Integer, nullable=False, default=0)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    expires_at = Column(DateTime, nullable=False)

@@ -23,7 +23,7 @@ export interface PolicyStatus {
 
 export interface User {
   id: string;
-  email: string;
+  email: string | null;
   full_name: string;
   phone?: string | null;
   university?: string | null;
@@ -61,6 +61,7 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: (credential: string) => Promise<void>;
+  signInWithToken: (token: string) => Promise<void>;
   logout: () => void;
   updateUser: (updatedUser: User) => void;
   refreshUser: () => Promise<void>;
@@ -178,6 +179,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signInWithToken = async (token: string) => {
+    setLoading(true);
+    try {
+      setAuthToken(token);
+      const userData = await api.get<User>("/auth/me");
+      setUser(userData);
+      router.push(userData.role === "admin" ? "/admin" : emailLinkDestination(window.location.search));
+    } catch (error) {
+      clearAuthToken();
+      throw error;
+    } finally { setLoading(false); }
+  };
+
   const logout = () => {
     clearAuthToken();
     setUser(null);
@@ -193,7 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, logout, updateUser, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, signInWithToken, logout, updateUser, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

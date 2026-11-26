@@ -169,12 +169,14 @@ def _welcome_ambassador(user):
         return
     try:
         from app.core.mail import send_welcome_email
-        send_welcome_email(user.email, user.full_name, getattr(user, "referral_code", "") or "")
+        if user.email:
+            send_welcome_email(user.email, user.full_name, getattr(user, "referral_code", "") or "")
     except Exception as e:
         print(f"[mail] welcome email failed for {getattr(user, 'email', None)}: {e}")
     try:
         from app.integrations.mailerlite import add_ambassador
-        add_ambassador(user.email, name=user.full_name, referral_code=getattr(user, "referral_code", None))
+        if user.email:
+            add_ambassador(user.email, name=user.full_name, referral_code=getattr(user, "referral_code", None))
     except Exception as e:
         print(f"[mailerlite] add failed for {getattr(user, 'email', None)}: {e}")
     try:
@@ -1459,6 +1461,8 @@ def update_user_profile(db: Session, user_id: str, user_update):
     if user_update.full_name is not None:
         user.full_name = user_update.full_name
     if getattr(user_update, "phone", None) is not None:
+        if user_update.phone != user.phone:
+            user.phone_verified_at = None
         user.phone = user_update.phone
     # Counsellor: only touch it when the field was explicitly sent, so a plain
     # phone/name update doesn't wipe it. Sending counsellor_id=None is the valid

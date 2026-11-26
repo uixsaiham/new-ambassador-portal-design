@@ -11,6 +11,8 @@ def _ensure_user_profile_columns():
     from sqlalchemy import inspect, text
     with engine.begin() as conn:
         columns = {col["name"] for col in inspect(conn).get_columns("users")}
+        if "phone_verified_at" not in columns:
+            conn.execute(text("ALTER TABLE users ADD COLUMN phone_verified_at TIMESTAMP"))
         for name in ("university", "department_year"):
             if name not in columns:
                 conn.execute(text(f"ALTER TABLE users ADD COLUMN {name} VARCHAR(200)"))
@@ -205,6 +207,8 @@ if "pytest" not in os.environ.get("PYTEST_CURRENT_TEST", ""):
     try:
         Base.metadata.create_all(bind=engine)
         _ensure_user_profile_columns()
+        from app.core.optional_email import ensure_optional_email
+        ensure_optional_email(engine)
         _ensure_payout_columns()
         _ensure_referral_columns()
         _ensure_otp_columns()
@@ -245,6 +249,9 @@ _RL_RULES = {
     "/auth/register": (15, 600),
     "/auth/login": (30, 300),
     "/auth/google": (30, 300),
+    "/auth/google/prepare": (30, 300),
+    "/auth/google/phone/send": (10, 300),
+    "/auth/google/complete": (30, 300),
     "/auth/register/initiate": (10, 600),
     "/auth/register/verify": (20, 600),
     "/auth/register/complete": (20, 600),

@@ -1,5 +1,6 @@
 "use client";
 
+import GooglePhoneDialog, { type GoogleSignupIdentity } from "./GooglePhoneDialog";
 import AppIcon from "@/components/AppIcon";
 import Link from "next/link";
 import "./auth-portal.css";
@@ -12,16 +13,14 @@ import { api } from "@/lib/api";
 type Mode = "login" | "register" | "verify" | "profile" | "forgot" | "reset";
 
 export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mode }) {
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, signInWithToken } = useAuth();
   const router = useRouter();
 
-  const [googleProfile, setGoogleProfile] = useState(false);
+  const [googleSignup, setGoogleSignup] = useState<GoogleSignupIdentity | null>(null);
   const [signupTestMode, setSignupTestMode] = useState(false);
   useEffect(() => { api.get<{test_mode: boolean}>("/auth/signup-mode").then(result => setSignupTestMode(result.test_mode)).catch(() => {}); }, []);
   const [mode, setMode] = useState<Mode>(initialMode);
   const [firstName, setFirstName] = useState("");
-  const [university, setUniversity] = useState("");
-  const [departmentYear, setDepartmentYear] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -90,7 +89,6 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
     resetMessages();
     setOtp(["", "", "", "", "", ""]);
     setVerificationToken(null);
-    setGoogleProfile(false);
     setMode(m);
     if (m === "login") router.push(`/login${window.location.search}`);
     else if (m === "register") router.push(`/signup${window.location.search}`);
@@ -103,7 +101,7 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
   // valid behaviour on the refer-a-lead and public capture forms.
   const registerEmailValid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
   const canRegister =
-    !!firstName.trim() && !!university.trim() && !!departmentYear.trim() && !!counsellorId && !!phone.trim() &&
+    !!firstName.trim() && !!phone.trim() &&
     registerEmailValid && password.length >= 8 && policyAccepted;
 
   // ── Handlers ──────────────────────────────────────────────────────────────
@@ -164,17 +162,15 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
     e.preventDefault();
     resetMessages();
     if (!verificationToken) { setMode("register"); setError("Please verify your email again."); return; }
-    if (!canRegister) { setError("Complete all required fields, choose a counsellor, create a password of at least 8 characters, and accept the programme terms."); return; }
+    if (!canRegister) { setError("Complete all required fields, create a password of at least 8 characters, and accept the programme terms."); return; }
     setLoading(true);
     try {
       const chosen = counsellors.find((c) => String(c.id) === counsellorId);
-      await api.post(googleProfile ? "/auth/google/complete" : "/auth/register/simple", {
+      await api.post("/auth/register/simple", {
         verification_token: verificationToken,
         first_name: firstName.trim().split(/\s+/)[0],
         last_name: firstName.trim().split(/\s+/).slice(1).join(" "),
-        university: university.trim(),
-        department_year: departmentYear.trim(),
-        email,
+        email: email.trim(),
         phone,
         password,
         counsellor_id: chosen ? chosen.id : null,
@@ -182,7 +178,7 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
         policy_accepted: policyAccepted,
       });
       // Account created, sign straight in (routes to the dashboard).
-      await login(email, password);
+      await login(email.trim(), password);
     } catch (err: any) {
       setError(err.message || "Could not create your account. Please try again.");
       setLoading(false);
@@ -289,13 +285,13 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
         <div className="auth-story-content"><AppIcon name="graduation-cap" className="auth-story-icon" /><h1>A connection <br/>can change <br/>a life.</h1><p>Help your friends find their next chapter.<br/>Build a little something for yours.</p></div>
         <p className="auth-story-footer">A BHE UNI community · Made for Bangladesh</p>
       </aside>
+      {googleSignup && <GooglePhoneDialog identity={googleSignup} testMode={signupTestMode} onClose={() => setGoogleSignup(null)} />}
       <main className="auth-form-side"><div className="auth-form-container">
         <header className="auth-form-heading"><h2>{current.title}</h2><p>{current.subtitle}</p></header>
-        {!googleProfile && (mode === "register" || mode === "verify" || mode === "profile") && <ol className="auth-steps" aria-label="Registration progress">{["Phone", "Verify", "Profile"].map((label, index) => { const currentStep = mode === "register" ? 0 : mode === "verify" ? 1 : 2; return <li key={label} className={index <= currentStep ? "is-active" : ""} aria-current={index === currentStep ? "step" : undefined}><span>{index < currentStep ? <AppIcon className="fa-solid fa-check" aria-hidden="true"/> : index + 1}</span>{label}{index < 2 && <AppIcon className="fa-solid fa-chevron-right" aria-hidden="true"/>}</li>; })}</ol>}
+        {(mode === "register" || mode === "verify" || mode === "profile") && <ol className="auth-steps" aria-label="Registration progress">{["Phone", "Verify", "Profile"].map((label, index) => { const currentStep = mode === "register" ? 0 : mode === "verify" ? 1 : 2; return <li key={label} className={index <= currentStep ? "is-active" : ""} aria-current={index === currentStep ? "step" : undefined}><span>{index < currentStep ? <AppIcon className="fa-solid fa-check" aria-hidden="true"/> : index + 1}</span>{label}{index < 2 && <AppIcon className="fa-solid fa-chevron-right" aria-hidden="true"/>}</li>; })}</ol>}
         <div className="auth-form-card">
           {signupTestMode && (mode === "forgot" || mode === "reset") && <p className="auth-code-note">Test preview: no email is sent. Use reset code <strong>123456</strong> and choose a new password.</p>}
-          {googleProfile && <p className="auth-code-note"><AppIcon name="circle-check"/> {signupTestMode ? "Demo Google account selected. Complete your details below." : "Google email verified. Complete your details below to join the programme."}</p>}
-          {(mode === "register" || mode === "verify" || mode === "profile") && !googleProfile && <p className="auth-code-note">{signupTestMode ? <>Test preview: no email is sent. Use code <strong>123456</strong> to explore. Use dummy details and a test password.</> : "We’ll send a 6-digit verification code to your email address."}</p>}
+          {(mode === "register" || mode === "verify" || mode === "profile") && <p className="auth-code-note">{signupTestMode ? <>Test preview: no email is sent. Use code <strong>123456</strong> to explore. Use dummy details and a test password.</> : "We’ll send a 6-digit verification code to your email address."}</p>}
           {/* Google verifies identity; new ambassadors complete their profile before sign-in. */}
           {(mode === "login" || mode === "register") && (
             <div className="mb-5">
@@ -307,16 +303,12 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
                         resetMessages();
                         setLoading(true);
                         try {
-                          const result = await api.post<{needs_profile:boolean;email?:string;full_name?:string;verification_token?:string}>("/auth/google/prepare", {credential:credentialResponse.credential});
+                          const result = await api.post<{needs_profile:boolean;access_token?:string;email?:string;full_name?:string;verification_token?:string}>("/auth/google/prepare", {credential:credentialResponse.credential});
                           if (result.needs_profile && result.email && result.verification_token) {
-                            setGoogleProfile(true);
-                            setEmail(result.email);
-                            setFirstName(result.full_name || "");
-                            setVerificationToken(result.verification_token);
-                            setPhone(""); setUniversity(""); setDepartmentYear(""); setPassword(""); setPolicyAccepted(false);
-                            setMode("profile");
+                            setGoogleSignup({email: result.email, full_name: result.full_name, verification_token:result.verification_token});
                             setLoading(false);
-                          } else await loginWithGoogle(credentialResponse.credential);
+                          } else if (result.access_token) await signInWithToken(result.access_token);
+                          else await loginWithGoogle(credentialResponse.credential);
                         } catch (err: any) {
                           setError(err.message || "Google authentication failed.");
                           setLoading(false);
@@ -339,9 +331,14 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
                     onClick={async () => {
                       resetMessages(); setLoading(true);
                       try {
-                        const result = await api.post<{email:string;full_name:string;verification_token:string}>("/auth/google/demo");
-                        setGoogleProfile(true); setEmail(result.email); setFirstName(result.full_name);
-                        setVerificationToken(result.verification_token); setPhone(""); setUniversity(""); setDepartmentYear(""); setPassword(""); setPolicyAccepted(false); setMode("profile");
+                        let demoId = localStorage.getItem("bhe_google_demo_id");
+                        if (!demoId || !/^[a-f0-9]{32}$/.test(demoId)) {
+                          demoId = crypto.randomUUID().replaceAll("-", "");
+                          localStorage.setItem("bhe_google_demo_id", demoId);
+                        }
+                        const result = await api.post<GoogleSignupIdentity & {needs_profile:boolean;access_token?:string}>("/auth/google/demo", {demo_id:demoId});
+                        if (result.access_token) await signInWithToken(result.access_token);
+                        else setGoogleSignup(result);
                       } catch (error) { setError(error instanceof Error ? error.message : "Could not start the demo."); }
                       finally { setLoading(false); }
                     }}
@@ -355,7 +352,7 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
               </div>
               <div className="my-5 flex items-center gap-3">
                 <hr className="flex-1 border-slate-700/50" />
-                <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">or with email</span>
+                <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">or create an account</span>
                 <hr className="flex-1 border-slate-700/50" />
               </div>
             </div>
@@ -382,15 +379,15 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
             )}
 
             {/* ── REGISTER: First + Last ── */}
-            {(mode === "register" || (mode === "profile" && googleProfile)) && (
+            {mode === "register" && (
               <>
                   <div>
-                    <label className={labelCls} htmlFor="auth-counsellor">Your BHE Uni counsellor <span className="text-red-500">*</span></label>
+                    <label className={labelCls} htmlFor="auth-counsellor">Your BHE Uni counsellor <span className="text-slate-500">(optional)</span></label>
                     <div className="relative auth-counsellor" ref={counsellorBox} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setCounsellorOpen(false); }} onKeyDown={event => { if (event.key === "Escape") { event.preventDefault(); setCounsellorOpen(false); counsellorTrigger.current?.focus(); } }}>
-                      <button ref={counsellorTrigger} id="auth-counsellor" type="button" className="auth-counsellor-trigger" aria-expanded={counsellorOpen} aria-controls="auth-counsellor-options" onClick={() => { setCounsellorOpen(!counsellorOpen); setCounsellorSearch(""); }}><AppIcon name="user" className="auth-counsellor-user-icon" style={{ fontSize: 18 }} /><span>{counsellors.find(c => String(c.id) === counsellorId)?.name || "Choose your counsellor"}</span><AppIcon className={`fa-solid fa-chevron-${counsellorOpen ? "up" : "down"}`} aria-hidden="true"/></button>
+                      <button ref={counsellorTrigger} id="auth-counsellor" type="button" className="auth-counsellor-trigger" aria-expanded={counsellorOpen} aria-controls="auth-counsellor-options" onClick={() => { setCounsellorOpen(!counsellorOpen); setCounsellorSearch(""); }}><AppIcon name="user" className="auth-counsellor-user-icon" style={{ fontSize: 18 }} /><span>{counsellors.find(c => String(c.id) === counsellorId)?.name || "None / choose later"}</span><AppIcon className={`fa-solid fa-chevron-${counsellorOpen ? "up" : "down"}`} aria-hidden="true"/></button>
                       {counsellorOpen && <div className="auth-counsellor-menu" id="auth-counsellor-options">
                         <input autoFocus type="search" aria-label="Search counsellors" placeholder="Search counsellors…" value={counsellorSearch} onChange={event => setCounsellorSearch(event.target.value)}/>
-                        <div className="auth-counsellor-options">
+                        <div className="auth-counsellor-options"><button type="button" aria-pressed={!counsellorId} onClick={() => { setCounsellorId(""); setCounsellorOpen(false); counsellorTrigger.current?.focus(); }}>None / choose later</button>
                           {counsellors.filter(c => c.name.toLowerCase().includes(counsellorSearch.toLowerCase())).map(c => <button key={c.id} type="button" aria-pressed={counsellorId === String(c.id)} onClick={() => { setCounsellorId(String(c.id)); setCounsellorOpen(false); counsellorTrigger.current?.focus(); }}><span>{c.name}</span>{counsellorId === String(c.id) && <AppIcon className="fa-solid fa-check" aria-hidden="true"/>}</button>)}
                           {!counsellors.some(c => c.name.toLowerCase().includes(counsellorSearch.toLowerCase())) && <p>No counsellors found.</p>}
                         </div>
@@ -409,18 +406,16 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
 
             {mode === "profile" && <>
               <div><label className={labelCls} htmlFor="signup-full-name">Full name <span className="text-red-500">*</span></label><input id="signup-full-name" type="text" required placeholder="Nusrat Jahan" autoComplete="name" className={inputCls} value={firstName} onChange={e => setFirstName(e.target.value)}/></div>
-              <div><label className={labelCls} htmlFor="signup-university">University <span className="text-red-500">*</span></label><input id="signup-university" type="text" required placeholder="University of Dhaka" className={inputCls} value={university} onChange={e => setUniversity(e.target.value)}/></div>
-              <div><label className={labelCls} htmlFor="signup-department">Department &amp; year <span className="text-red-500">*</span></label><input id="signup-department" type="text" required placeholder="BBA, 3rd year" className={inputCls} value={departmentYear} onChange={e => setDepartmentYear(e.target.value)}/></div>
-              <div><label className={labelCls} htmlFor="signup-verified-email">Email address <span className="text-red-500">*</span></label><input id="signup-verified-email" type="email" readOnly className={inputCls} value={email}/></div>
+              {email.trim() && <div><label className={labelCls} htmlFor="signup-verified-email">Email address <span className="text-red-500">*</span></label><input id="signup-verified-email" type="email" readOnly className={inputCls} value={email}/></div>}
             </>}
 
             {/* ── Email (login / register / forgot) ── */}
             {(mode === "login" || mode === "register" || mode === "forgot") && (
               <div>
-                <label className={labelCls}>Email address <span className="text-red-500">*</span></label>
+                <label className={labelCls}>{mode === "login" ? "Email or mobile number" : "Email address"} <span className="text-red-500">*</span></label>
                 <div className="relative">
                   <AppIcon className="fa-regular fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></AppIcon>
-                  <input type="email" required placeholder="alex.m@university.com" className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <input type={mode === "login" ? "text" : "email"} required placeholder={mode === "login" ? "Email or mobile number" : "alex.m@university.com"} className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
               </div>
             )}
@@ -509,7 +504,7 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
 
             {/* Submit */}
             <button
-              type="submit" disabled={loading || (mode === "register" && !(counsellorId && phone.trim() && registerEmailValid)) || (mode === "profile" && !canRegister)}
+              type="submit" disabled={loading || (mode === "register" && !(phone.trim() && registerEmailValid)) || (mode === "profile" && !canRegister)}
               className="auth-submit"
             >
               {loading ? (

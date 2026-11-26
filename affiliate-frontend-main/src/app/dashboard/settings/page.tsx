@@ -188,7 +188,7 @@ export default function SettingsPage() {
                 {counsellors.map(c => <option key={c.id} value={String(c.id)}>{c.name}</option>)}
               </AppSelect>
             </label>
-            <label>Email address <input type="email" disabled value={user.email} /></label>
+            <label>Email address <input type="email" disabled value={user.email ?? ""} placeholder="Not provided" /></label>
             <label>Mobile number <input type="tel" value={phone} autoComplete="tel" onChange={e => setPhone(e.target.value)} placeholder="Your mobile number" /></label>
           </div>
           <button type="submit" disabled={loading} className="settings-save">{loading ? "Saving…" : "Save profile"}</button>
