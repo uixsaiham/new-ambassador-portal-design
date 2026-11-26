@@ -13,3 +13,24 @@ export function isValidPhone(v: string | null | undefined): boolean {
   const digits = t.replace(/\D/g, "");
   return digits.length >= 7 && digits.length <= 15;
 }
+
+
+export function phoneInputParts(value: string) {
+  const raw = value.trim();
+  let digits = raw.replace(/\D/g, "");
+  if (digits.startsWith("00880")) digits = digits.slice(5);
+  else if (digits.startsWith("880")) digits = digits.slice(3);
+  else if (raw.startsWith("+") || raw.startsWith("00")) {
+    if (raw.startsWith("00")) digits = digits.slice(2);
+    // Keep international numbers usable without imposing Bangladesh's format.
+    const prefix = digits.startsWith("44") ? "+44" : digits.startsWith("1") ? "+1" : "+";
+    return { prefix, digits: digits.slice(prefix.length - 1).slice(0, 15 - (prefix.length - 1)) };
+  }
+  return { prefix: "+880", digits: digits.replace(/^0/, "").slice(0, 10) };
+}
+
+export function formatPhoneDigits(digits: string, prefix: string) {
+  const groups = prefix === "+880" ? [4, 3, 3] : [3, 3, 4, 5];
+  let offset = 0;
+  return groups.map(size => { const group = digits.slice(offset, offset + size); offset += size; return group; }).filter(Boolean).join(" ");
+}

@@ -110,7 +110,7 @@ class Settings(BaseSettings):
 
     # Reward amount (BDT) credited when an admin approves an ENROLLED referral.
     # Also authoritative here — never auto-paid; an admin approves each one.
-    ENROLMENT_REWARD_AMOUNT: str = os.getenv("ENROLMENT_REWARD_AMOUNT", "500.00")
+    ENROLMENT_REWARD_AMOUNT: str = os.getenv("ENROLMENT_REWARD_AMOUNT", "25000.00")
 
     # --- Payout / cash-out policy (BDT) ---
     # Minimum withdrawal per method: bank transfer ৳50, gift card ৳10.

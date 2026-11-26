@@ -1088,13 +1088,13 @@ def _application_shows_enrolled(referral) -> bool:
 
 
 def _enrolment_installment_amount() -> Decimal:
-    """Each installment is half the total enrolment reward (৳250 of ৳500), to 2dp."""
+    """Each installment is half the configured total enrolment reward, to 2dp."""
     total = Decimal(str(settings.ENROLMENT_REWARD_AMOUNT))
     return (total / 2).quantize(Decimal("0.01"))
 
 
 def pay_enrolment_installment(db: Session, referral_id: str, installment: int, admin_id: str):
-    """Approve ONE half (৳250) of the enrolment reward, as the partner university pays
+    """Approve ONE half of the configured enrolment reward, as the partner university pays
     BHE Uni in stages. Installment 1 must be approved before installment 2. Admin
     approved, idempotent per installment, never auto-paid. The referral is marked
     fully settled (enrolment_reward_paid) once both halves are paid.
