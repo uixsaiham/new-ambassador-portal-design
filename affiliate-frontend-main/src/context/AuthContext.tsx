@@ -123,8 +123,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else if (user.role === "admin" && isDashboard) {
         router.push("/admin");
       }
-      // Redirect away from login pages if already logged in
-      if (pathname === "/login" || pathname === "/signup") {
+      // Signup remains available when the user explicitly starts a new registration.
+      if (pathname === "/login") {
         router.push(user.role === "admin" ? "/admin" : emailLinkDestination(window.location.search));
       } else if (pathname === "/admin/login") {
         router.push("/admin");

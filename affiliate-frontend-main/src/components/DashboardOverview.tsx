@@ -53,7 +53,7 @@ export default function DashboardOverview({ stats, referrals, name, referralLink
   const nudge = referrals.find(r => { const step = getReferralStage(r, false).step; return step > 0 && step < 5 && r.lead_email; });
   const nudgeName = nudge?.lead_name.split(" ")[0];
   const progress = getTierProgress(stats.tier, stats.leads_to_next_tier, stats.tier_configs);
-  const stages = (bn ? ["যোগাযোগ", "সম্ভাবনাময়", "আবেদন", "অফার", "ভর্তি"] : ["Enquired", "Potential", "Applied", "Offer", "Enrolled"]).map((label, index) => ({ label, count: referrals.filter(r => getReferralStage(r, false).step === index + 1).length }));
+  const stages = (bn ? ["যোগাযোগ", "যোগ্য", "আবেদন", "অফার", "ভর্তি"] : ["Enquired", "Qualified", "Applied", "Offer", "Enrolled"]).map((label, index) => ({ label, count: referrals.filter(r => getReferralStage(r, false).step === index + 1).length }));
   const rejected = referrals.filter(r => getReferralStage(r, false).step === 0).length;
   const totalActive = stages.reduce((total, item) => total + item.count, 0);
   const balance = Number(stats.wallet_balance || 0).toFixed(2).split(".");

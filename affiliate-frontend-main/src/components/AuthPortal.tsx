@@ -1,6 +1,8 @@
 "use client";
 
 import GooglePhoneDialog, { type GoogleSignupIdentity } from "./GooglePhoneDialog";
+import GoogleProcessingDialog from "./GoogleProcessingDialog";
+import PhoneNumberInput from "./PhoneNumberInput";
 import AppIcon from "@/components/AppIcon";
 import Link from "next/link";
 import "./auth-portal.css";
@@ -16,6 +18,7 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
   const { login, loginWithGoogle, signInWithToken } = useAuth();
   const router = useRouter();
 
+  const [googleProcessing, setGoogleProcessing] = useState(false);
   const [googleSignup, setGoogleSignup] = useState<GoogleSignupIdentity | null>(null);
   const [signupTestMode, setSignupTestMode] = useState(false);
   useEffect(() => { api.get<{test_mode: boolean}>("/auth/signup-mode").then(result => setSignupTestMode(result.test_mode)).catch(() => {}); }, []);
@@ -285,7 +288,8 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
         <div className="auth-story-content"><AppIcon name="graduation-cap" className="auth-story-icon" /><h1>A connection <br/>can change <br/>a life.</h1><p>Help your friends find their next chapter.<br/>Build a little something for yours.</p></div>
         <p className="auth-story-footer">A BHE UNI community · Made for Bangladesh</p>
       </aside>
-      {googleSignup && <GooglePhoneDialog identity={googleSignup} testMode={signupTestMode} onClose={() => setGoogleSignup(null)} />}
+      {googleProcessing && <GoogleProcessingDialog demo={!hasGoogleClientId} />}
+      {googleSignup && !googleProcessing && <GooglePhoneDialog identity={googleSignup} testMode={signupTestMode} onClose={() => setGoogleSignup(null)} />}
       <main className="auth-form-side"><div className="auth-form-container">
         <header className="auth-form-heading"><h2>{current.title}</h2><p>{current.subtitle}</p></header>
         {(mode === "register" || mode === "verify" || mode === "profile") && <ol className="auth-steps" aria-label="Registration progress">{["Phone", "Verify", "Profile"].map((label, index) => { const currentStep = mode === "register" ? 0 : mode === "verify" ? 1 : 2; return <li key={label} className={index <= currentStep ? "is-active" : ""} aria-current={index === currentStep ? "step" : undefined}><span>{index < currentStep ? <AppIcon className="fa-solid fa-check" aria-hidden="true"/> : index + 1}</span>{label}{index < 2 && <AppIcon className="fa-solid fa-chevron-right" aria-hidden="true"/>}</li>; })}</ol>}
@@ -298,21 +302,27 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
               <div ref={googleBoxRef} className="flex justify-center w-full">
                 {hasGoogleClientId ? (
                   <GoogleLogin
+                    auto_select={false}
+                    useOneTap={false}
                     onSuccess={async (credentialResponse) => {
                       if (credentialResponse.credential) {
                         resetMessages();
                         setLoading(true);
+                        setGoogleProcessing(true);
                         try {
-                          const result = await api.post<{needs_profile:boolean;access_token?:string;email?:string;full_name?:string;verification_token?:string}>("/auth/google/prepare", {credential:credentialResponse.credential});
+                          const [result] = await Promise.all([
+                            api.post<{needs_profile:boolean;access_token?:string;email?:string;full_name?:string;verification_token?:string}>("/auth/google/prepare", {credential:credentialResponse.credential, intent:mode === "register" ? "signup" : "signin"}),
+                            new Promise(resolve => setTimeout(resolve, 650)),
+                          ]);
                           if (result.needs_profile && result.email && result.verification_token) {
                             setGoogleSignup({email: result.email, full_name: result.full_name, verification_token:result.verification_token});
                             setLoading(false);
-                          } else if (result.access_token) await signInWithToken(result.access_token);
+                          } else if (mode === "register") throw new Error("This Google account is already registered. Sign in or choose a different Google account to sign up.");
+                          else if (result.access_token) await signInWithToken(result.access_token);
                           else await loginWithGoogle(credentialResponse.credential);
                         } catch (err: any) {
                           setError(err.message || "Google authentication failed.");
-                          setLoading(false);
-                        }
+                        } finally { setGoogleProcessing(false); setLoading(false); }
                       }
                     }}
                     onError={() => setError("Google authentication failed.")}
@@ -329,18 +339,22 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
                     disabled={loading || !signupTestMode}
                     title={signupTestMode ? "Try Google onboarding with a dummy account" : "Google sign-in requires a configured Google OAuth client ID"}
                     onClick={async () => {
-                      resetMessages(); setLoading(true);
+                      resetMessages(); setLoading(true); setGoogleProcessing(true);
                       try {
                         let demoId = localStorage.getItem("bhe_google_demo_id");
                         if (!demoId || !/^[a-f0-9]{32}$/.test(demoId)) {
                           demoId = crypto.randomUUID().replaceAll("-", "");
                           localStorage.setItem("bhe_google_demo_id", demoId);
                         }
-                        const result = await api.post<GoogleSignupIdentity & {needs_profile:boolean;access_token?:string}>("/auth/google/demo", {demo_id:demoId});
+                        const [result] = await Promise.all([
+                          api.post<GoogleSignupIdentity & {needs_profile:boolean;access_token?:string;demo_id?:string}>("/auth/google/demo", {demo_id:demoId, intent:mode === "register" ? "signup" : "signin"}),
+                          new Promise(resolve => setTimeout(resolve, 650)),
+                        ]);
+                        if (result.demo_id) localStorage.setItem("bhe_google_demo_id", result.demo_id);
                         if (result.access_token) await signInWithToken(result.access_token);
                         else setGoogleSignup(result);
                       } catch (error) { setError(error instanceof Error ? error.message : "Could not start the demo."); }
-                      finally { setLoading(false); }
+                      finally { setGoogleProcessing(false); setLoading(false); }
                     }}
                     className="auth-google-button"
                   >
@@ -395,11 +409,9 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
                     </div>
                   </div>
                 <div>
-                  <label className={labelCls}>Mobile number (+880) <span className="text-red-500">*</span></label>
-                  <div className="relative">
-                    <AppIcon className="fa-solid fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></AppIcon>
-                    <input type="tel" required placeholder="01712 345678" className={inputCls} value={phone} onChange={(e) => setPhone(e.target.value)} />
-                  </div>
+                  <label className={labelCls} htmlFor="signup-phone">Mobile number <span className="text-red-500">*</span></label>
+                  <PhoneNumberInput id="signup-phone" required value={phone} onChange={setPhone}/>
+
                 </div>
               </>
             )}
@@ -424,7 +436,7 @@ export default function AuthPortal({ initialMode = "login" }: { initialMode?: Mo
             {(mode === "reset" || mode === "verify") && (
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-4 uppercase tracking-wider text-center">{mode === "verify" ? "Verification code" : "Reset code"}</label>
-                <input type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} required aria-label="Your 6-digit code" placeholder="123456" className={inputCls} value={otp.join("")} onChange={event => { const value = event.target.value.replace(/\D/g, "").slice(0,6); setOtp(Array.from({length:6},(_,index) => value[index] || "")); }}/>
+                <input type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} required aria-label="Your 6-digit code" placeholder="123456" className={inputCls.replace("pl-10", "pl-3")} value={otp.join("")} onChange={event => { const value = event.target.value.replace(/\D/g, "").slice(0,6); setOtp(Array.from({length:6},(_,index) => value[index] || "")); }}/>
 
                 <p className="text-center text-xs text-slate-500 mt-4">
                   Didn&apos;t get it?{" "}

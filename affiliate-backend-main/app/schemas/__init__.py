@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Literal
 from decimal import Decimal
 from datetime import datetime
 from app.models import UserRole, AmbassadorTier, ReferralStatus, PayoutStatus, PayoutMethod, TransactionType, TransactionCategory
@@ -445,4 +445,9 @@ class GooglePhoneComplete(BaseModel):
 
 
 class GoogleDemoRequest(BaseModel):
+    intent: Literal["signin", "signup"] = "signin"
     demo_id: Optional[str] = Field(default=None, pattern=r"^[a-f0-9]{32}$")
+
+
+class GooglePrepareRequest(UserGoogleLogin):
+    intent: Literal["signin", "signup"] = "signin"

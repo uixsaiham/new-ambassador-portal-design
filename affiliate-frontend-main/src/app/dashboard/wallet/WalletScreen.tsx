@@ -37,7 +37,7 @@ export default function WalletScreen({ initialView = "wallet" }: { initialView?:
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState<Method>("bkash");
   const [details, setDetails] = useState<Record<string,string>>({ account_type: "personal" });
-  const [policy, setPolicy] = useState({ min_withdrawal: 50, max_withdrawal: 5000, enrolment_reward: 500 });
+  const [policy, setPolicy] = useState({ min_withdrawal: 50, max_withdrawal: 5000, enrolment_reward: 25000 });
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -53,7 +53,7 @@ export default function WalletScreen({ initialView = "wallet" }: { initialView?:
       api.get<Transaction[]>("/ambassador/transactions"), api.get<typeof policy>("/public/payout-policy"), api.get<{ wallet_balance: number }>("/ambassador/stats"), api.get<RewardReferral[]>("/ambassador/referrals"),
     ]);
     setAccounts(saved); setPayouts(requests.sort((a,b) => new Date(b.created_at).getTime()-new Date(a.created_at).getTime()));
-    setTransactions(logs); setPolicy({ ...limits, enrolment_reward: limits.enrolment_reward ?? 500 }); setRewardReferrals(referrals); setWalletBalance(Number(stats.wallet_balance));
+    setTransactions(logs); setPolicy({ ...limits, enrolment_reward: limits.enrolment_reward ?? 25000 }); setRewardReferrals(referrals); setWalletBalance(Number(stats.wallet_balance));
     setSelectedId(current => current || saved[0]?.id || "");
   };
   useEffect(() => {

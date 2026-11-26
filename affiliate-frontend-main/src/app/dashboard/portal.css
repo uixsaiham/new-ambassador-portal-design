@@ -1403,3 +1403,5 @@
 .portal-header .header-notification-dot { top:6px; right:7px; width:6px; height:6px; border:1px solid #fff; box-shadow:0 0 0 2px #fff; }
 @media(max-width:800px) { .portal-header { gap:12px; } .portal-header .portal-breadcrumb { gap:8px; } .portal-header-actions { gap:8px; } }
 @media(max-width:640px) { .portal-header .portal-header-date { display:none; } .portal-header .breadcrumb-home,.portal-header .breadcrumb-separator { display:none; } .portal-header .portal-breadcrumb { margin-right:auto; font-size:12px; } .portal-header .language-switch>button { min-width:34px; padding:4px 7px; } }
+/* Align stage labels and five-step indicators to the same column width. */
+.portal .latest-stage-heading{display:inline-block;width:100px;max-width:100%;text-align:center}.portal .latest-stage-stack{display:flex;flex-direction:column;align-items:stretch;width:100px;max-width:100%;gap:7px}.portal .latest-stage-stack .latest-stage{text-align:center;padding:5px 8px}.portal .latest-stage-stack .latest-stage-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;width:100%;margin:0}.portal .latest-stage-stack .latest-stage-steps span{width:100%;height:2px}

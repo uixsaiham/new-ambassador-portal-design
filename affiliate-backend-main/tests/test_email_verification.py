@@ -479,3 +479,45 @@ def test_google_demo_returning_user_skips_signup(auth_env, monkeypatch):
         assert db.query(models.GooglePhoneChallenge).count() == 0
     monkeypatch.setattr(auth.settings, "LOCAL_SIGNUP_TEST_MODE", False)
     assert client.post("/auth/google/demo", json={"demo_id":demo_id}).status_code == 404
+
+
+def test_explicit_signup_does_not_reuse_completed_google_account(auth_env, monkeypatch):
+    from app.api import auth
+    client, sessions, _ = auth_env
+    email = "existing-google@example.com"
+    monkeypatch.setattr(auth, "_google_identity", lambda credential: {"email":email,"name":"Existing User","email_verified":True})
+    with sessions() as db:
+        db.add(models.User(email=email, full_name="Existing User", phone="+8801712345678", phone_verified_at=datetime.utcnow(), policy_accepted_at=datetime.utcnow(), password_hash="unused", referral_code="EXISTING", role=models.UserRole.student))
+        db.commit()
+    signup = client.post("/auth/google/prepare", json={"credential":"valid","intent":"signup"})
+    assert signup.status_code == 409
+    assert "access_token" not in signup.json()
+    signin = client.post("/auth/google/prepare", json={"credential":"valid","intent":"signin"})
+    assert signin.status_code == 200
+    assert signin.json()["needs_profile"] is False
+    assert signin.json()["access_token"]
+
+
+def test_demo_signup_always_starts_a_new_registration(auth_env, monkeypatch):
+    from app.api import auth
+    client, _, _ = auth_env
+    monkeypatch.setattr(auth.settings,"LOCAL_SIGNUP_TEST_MODE",True)
+    old_id = "b" * 32
+    first = client.post("/auth/google/demo",json={"demo_id":old_id,"intent":"signup"}).json()
+    second = client.post("/auth/google/demo",json={"demo_id":first["demo_id"],"intent":"signup"}).json()
+    assert first["needs_profile"] and second["needs_profile"]
+    assert first["demo_id"] != old_id
+    assert second["demo_id"] != first["demo_id"]
+    assert first["email"] != second["email"]
+    assert "access_token" not in first and "access_token" not in second
+
+
+def test_enrolment_reward_policy_and_installments_use_25000(auth_env, monkeypatch):
+    from decimal import Decimal
+    from app import crud
+    client, _, _ = auth_env
+    monkeypatch.setattr(main.settings,"ENROLMENT_REWARD_AMOUNT","25000.00")
+    response = client.get("/public/payout-policy")
+    assert response.status_code == 200
+    assert response.json()["enrolment_reward"] == 25000
+    assert crud._enrolment_installment_amount() == Decimal("12500.00")

@@ -16,7 +16,6 @@ interface VisualTier {
   key: string;
   label: string;
   threshold: number;
-  bonus: string;
   bg: string;
   text: string;
   border: string;
@@ -30,7 +29,6 @@ const TIERS: VisualTier[] = [
     key: "bronze",
     label: "BRONZE",
     threshold: 10,
-    bonus: "৳25",
     bg: "bg-amber-600/10",
     text: "text-amber-500",
     border: "border-amber-500/20",
@@ -42,7 +40,6 @@ const TIERS: VisualTier[] = [
     key: "silver",
     label: "SILVER",
     threshold: 25,
-    bonus: "৳100",
     bg: "bg-slate-400/10",
     text: "text-slate-300",
     border: "border-slate-400/20",
@@ -54,7 +51,6 @@ const TIERS: VisualTier[] = [
     key: "gold",
     label: "GOLD",
     threshold: 50,
-    bonus: "৳250",
     bg: "bg-yellow-500/10",
     text: "text-yellow-400",
     border: "border-yellow-500/20",
@@ -66,7 +62,6 @@ const TIERS: VisualTier[] = [
     key: "platinum",
     label: "PLATINUM",
     threshold: 100,
-    bonus: "৳500",
     bg: "bg-cyan-400/10",
     text: "text-cyan-300",
     border: "border-cyan-400/20",
@@ -99,7 +94,6 @@ export default function AmbassadorMilestones() {
     return {
       ...t,
       threshold: apiConfig ? Number(apiConfig.leads_required) : t.threshold,
-      bonus: apiConfig ? `৳${Number(apiConfig.bonus_amount).toFixed(0)}` : t.bonus,
     };
   });
 
@@ -121,7 +115,6 @@ export default function AmbassadorMilestones() {
             <div className="milestone-progress" role="progressbar" aria-label={`${tier.label} milestone`} aria-valuenow={Math.min(tierProgress.current, tier.threshold)} aria-valuemin={0} aria-valuemax={tier.threshold}><span style={{width: `${progress}%`}}/></div>
             <p className="milestone-progress-label">{isAchieved ? "Milestone reached" : `${Math.max(0, tier.threshold - tierProgress.current)} more leads to unlock`}</p>
             <ul>{tier.perks.map(perk => <li key={perk}><AppIcon className="fa-solid fa-check" aria-hidden="true"/>{perk}</li>)}</ul>
-            <footer><span>Cash bonus<small>{isAchieved ? "Milestone unlocked" : "Your next reward"}</small></span><strong>{tier.bonus}</strong></footer>
           </article>;
         })}
       </div>

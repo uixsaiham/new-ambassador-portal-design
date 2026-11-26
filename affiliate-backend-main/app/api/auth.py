@@ -300,7 +300,7 @@ def google_demo(data: schemas.GoogleDemoRequest = None, db: Session = Depends(ge
     import uuid
     if not settings.LOCAL_SIGNUP_TEST_MODE:
         raise HTTPException(404, "Not found")
-    demo_id = data.demo_id if data and data.demo_id else uuid.uuid4().hex
+    demo_id = data.demo_id if data and data.demo_id and data.intent != "signup" else uuid.uuid4().hex
     email = f"google.demo.{demo_id}@example.com"
     user = crud.get_user_by_email(db, email=email)
     if user and _google_profile_complete(user):
@@ -308,17 +308,19 @@ def google_demo(data: schemas.GoogleDemoRequest = None, db: Session = Depends(ge
     proof = models.OTPVerification(email=email, full_name="Nusrat Jahan", otp_code="", purpose="google_registration", is_verified=True, verification_token=str(uuid.uuid4()), expires_at=datetime.utcnow()+timedelta(minutes=10))
     db.add(proof)
     db.commit()
-    return {"needs_profile": True, "email": email, "full_name": "Nusrat Jahan", "verification_token": proof.verification_token}
+    return {"needs_profile": True, "email": email, "full_name": "Nusrat Jahan", "verification_token": proof.verification_token, "demo_id": demo_id}
 
 
 @router.post("/google/prepare")
-def google_prepare(data: schemas.UserGoogleLogin, db: Session = Depends(get_db)):
+def google_prepare(data: schemas.GooglePrepareRequest, db: Session = Depends(get_db)):
     from datetime import datetime, timedelta
     import uuid
     identity = _google_identity(data.credential)
     email = identity["email"]
     user = crud.get_user_by_email(db, email=email)
     if user and (user.role == models.UserRole.admin or _google_profile_complete(user)):
+        if data.intent == "signup":
+            raise HTTPException(409, "This Google account is already registered. Sign in or choose a different Google account to sign up.")
         return {"needs_profile": False, "access_token": create_access_token(subject=user.id, role=user.role.value, token_version=int(user.token_version or 0)), "token_type":"bearer"}
     # A short-lived, single-use proof allows profile completion without another email code.
     proof = models.OTPVerification(email=email, full_name=identity.get("name", ""), otp_code="", purpose="google_registration", is_verified=True, verification_token=str(uuid.uuid4()), expires_at=datetime.utcnow()+timedelta(minutes=10))
