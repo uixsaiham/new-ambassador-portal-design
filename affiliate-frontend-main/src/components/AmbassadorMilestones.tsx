@@ -35,7 +35,7 @@ const TIERS: VisualTier[] = [
     text: "text-amber-500",
     border: "border-amber-500/20",
     glow: "shadow-[0_0_20px_rgba(245,158,11,0.05)]",
-    perks: ["Digital Certificate", "Bronze Badge", "Exclusive Training Access"],
+    perks: ["Official ambassador badge", "Dashboard access"],
     icon: "fa-medal",
   },
   {
@@ -47,7 +47,7 @@ const TIERS: VisualTier[] = [
     text: "text-slate-300",
     border: "border-slate-400/20",
     glow: "shadow-[0_0_20px_rgba(148,163,184,0.05)]",
-    perks: ["Silver Certificate", "Branded Hoodie", "Priority Support"],
+    perks: ["All Bronze benefits", "Faster payout (e.g. 7 days instead of 14)"],
     icon: "fa-medal",
   },
   {
@@ -59,7 +59,7 @@ const TIERS: VisualTier[] = [
     text: "text-yellow-400",
     border: "border-yellow-500/20",
     glow: "shadow-[0_0_25px_rgba(234,179,8,0.08)]",
-    perks: ["Gold Certificate", "Social Media Feature", "VIP Event Invites"],
+    perks: ["All Silver benefits", "Featured on leaderboard", "+£2 bonus per lead"],
     icon: "fa-trophy",
   },
   {
@@ -71,7 +71,7 @@ const TIERS: VisualTier[] = [
     text: "text-cyan-300",
     border: "border-cyan-400/20",
     glow: "shadow-[0_0_30px_rgba(34,211,238,0.12)]",
-    perks: ["Platinum Excellence Award", "Hall of Fame Induction", "Annual Awards Ceremony"],
+    perks: ["All Gold benefits", "Dedicated support contact", "+£5 bonus per lead", "VIP badge"],
     icon: "fa-crown",
   },
 ];
@@ -121,7 +121,6 @@ export default function AmbassadorMilestones() {
             <div className="milestone-progress" role="progressbar" aria-label={`${tier.label} milestone`} aria-valuenow={Math.min(tierProgress.current, tier.threshold)} aria-valuemin={0} aria-valuemax={tier.threshold}><span style={{width: `${progress}%`}}/></div>
             <p className="milestone-progress-label">{isAchieved ? "Milestone reached" : `${Math.max(0, tier.threshold - tierProgress.current)} more leads to unlock`}</p>
             <ul>{tier.perks.map(perk => <li key={perk}><AppIcon className="fa-solid fa-check" aria-hidden="true"/>{perk}</li>)}</ul>
-            <footer><span>Cash bonus<small>{isAchieved ? "Milestone unlocked" : "Your next reward"}</small></span><strong>{tier.bonus}</strong></footer>
           </article>;
         })}
       </div>

@@ -76,6 +76,8 @@ class Settings(BaseSettings):
     # on this site are pushed to {CRM_BASE_URL}/api/integrations/affiliate/lead
     # authed with CRM_SERVICE_KEY. Empty disables the push (lead stays local-only).
     CRM_BASE_URL: str = os.getenv("CRM_BASE_URL", "")
+    # Optional country ID filter passed to CRM /counsellors (e.g. "19" for Bangladesh).
+    CRM_COUNSELLOR_COUNTRY: str = os.getenv("CRM_COUNSELLOR_COUNTRY", "")
 
     # --- MailerLite (marketing) ambassador sync ---
     # On signup, ambassadors are added to a MailerLite group so the marketing team

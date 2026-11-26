@@ -931,13 +931,14 @@
 .avatar-3 { background: #ece4f2; }
 .portal .latest-name { display: block; color: #454251; font-size: 13px; font-weight: 600; text-align: left; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .portal .latest-student p { font-size: 11px; color: #a49ea8; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.portal .latest-stage { display: inline-block; padding: 5px 9px; border-radius: 8px; font-size: 11px; line-height: 1.6; font-weight: 500; white-space: nowrap; }
+.portal .latest-stage-wrap { display: inline-flex; flex-direction: column; align-items: stretch; }
+.portal .latest-stage { display: inline-block; padding: 5px 9px; border-radius: 8px; font-size: 11px; line-height: 1.6; font-weight: 500; white-space: nowrap; text-align: center; }
 .portal .stage-applied { background: #eceffd; color: #6078ba; }
 .portal .stage-offer { background: #f1ebfa; color: #9473ba; }
 .portal .stage-potential, .portal .stage-enrolled { background: #eaf3ee; color: #4b866a; }
 .portal .stage-declined { background: #f6eaea; color: #a56767; }
-.latest-stage-steps { display: flex; gap: 4px; margin-top: 7px; width: 54px; }
-.latest-stage-steps span { width: 8px; height: 2px; background: #e5e2e8; transition: background .3s ease; }
+.latest-stage-steps { display: flex; gap: 4px; margin-top: 7px; width: 100%; }
+.latest-stage-steps span { flex: 1; min-width: 8px; height: 2px; background: #e5e2e8; transition: background .3s ease; }
 .latest-stage-steps .complete { background: #a6b0ce; }
 .steps-enrolled .complete { background: #93b2a0; }
 .portal .latest-table time { color: #aaa4ae; font-size: 11px; }

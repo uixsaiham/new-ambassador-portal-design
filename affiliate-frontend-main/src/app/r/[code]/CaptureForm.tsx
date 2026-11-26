@@ -132,7 +132,7 @@ export default function CaptureForm({ code, invalid, defaultCounsellorId = "" }:
         </div>
         <div>
           <label className={labelCls}>Phone number *</label>
-          <input className={inputCls} type="tel" value={form.lead_phone} onChange={set("lead_phone")} placeholder="07700 900123" autoComplete="tel" />
+          <input className={inputCls} type="tel" value={form.lead_phone} onChange={set("lead_phone")} placeholder="01712 345678" autoComplete="tel" />
         </div>
       </div>
 

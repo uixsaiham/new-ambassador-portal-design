@@ -142,6 +142,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAuthToken(data.access_token);
 
       const userData = await api.get<User>("/auth/me");
+      if (userData.role === "admin" && typeof window !== "undefined" && !window.location.pathname.startsWith("/admin")) {
+        clearAuthToken("bhe_token");
+        setAuthToken(data.access_token, "bhe_admin_token");
+      }
       setUser(userData);
       setLoading(false);
 
@@ -165,6 +169,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAuthToken(data.access_token);
 
       const userData = await api.get<User>("/auth/me");
+      if (userData.role === "admin" && typeof window !== "undefined" && !window.location.pathname.startsWith("/admin")) {
+        clearAuthToken("bhe_token");
+        setAuthToken(data.access_token, "bhe_admin_token");
+      }
       setUser(userData);
       setLoading(false);
 
@@ -184,6 +192,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setAuthToken(token);
       const userData = await api.get<User>("/auth/me");
+      if (userData.role === "admin" && typeof window !== "undefined" && !window.location.pathname.startsWith("/admin")) {
+        clearAuthToken("bhe_token");
+        setAuthToken(token, "bhe_admin_token");
+      }
       setUser(userData);
       router.push(userData.role === "admin" ? "/admin" : emailLinkDestination(window.location.search));
     } catch (error) {

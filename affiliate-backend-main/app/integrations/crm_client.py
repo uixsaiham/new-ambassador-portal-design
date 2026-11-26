@@ -77,8 +77,12 @@ def fetch_counsellors() -> list[dict]:
         return []
 
     try:
+        params = {}
+        if settings.CRM_COUNSELLOR_COUNTRY:
+            params["country"] = settings.CRM_COUNSELLOR_COUNTRY
         resp = httpx.get(
             f"{base_url}/api/integrations/affiliate/counsellors",
+            params=params,
             headers={
                 "X-Affiliate-Service-Key": service_key,
                 "Accept": "application/json",

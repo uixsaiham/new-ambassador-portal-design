@@ -18,11 +18,11 @@ export function authTokenKey(): string {
 export function getAuthToken(): string | null {
   return typeof window !== "undefined" ? localStorage.getItem(authTokenKey()) : null;
 }
-export function setAuthToken(token: string): void {
-  if (typeof window !== "undefined") localStorage.setItem(authTokenKey(), token);
+export function setAuthToken(token: string, keyOverride?: string): void {
+  if (typeof window !== "undefined") localStorage.setItem(keyOverride || authTokenKey(), token);
 }
-export function clearAuthToken(): void {
-  if (typeof window !== "undefined") localStorage.removeItem(authTokenKey());
+export function clearAuthToken(keyOverride?: string): void {
+  if (typeof window !== "undefined") localStorage.removeItem(keyOverride || authTokenKey());
 }
 
 async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
