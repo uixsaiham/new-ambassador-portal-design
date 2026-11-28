@@ -1,0 +1,11 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="31.1111" height="31.1111" viewBox="0 0 31.1111 31.1111" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Notifications">
+<rect x="0.388889" y="0.388889" width="30.3333" height="30.3333" rx="8.94444" fill="white"/>
+<rect x="0.388889" y="0.388889" width="30.3333" height="30.3333" rx="8.94444" stroke="#E8E5E0" stroke-width="0.777778"/>
+<g id="Icon/bell">
+<path id="Vector" d="M11.8611 13.0926C11.8611 12.1128 12.2503 11.1731 12.9432 10.4802C13.636 9.78738 14.5757 9.39815 15.5556 9.39815C16.5354 9.39815 17.4751 9.78738 18.1679 10.4802C18.8608 11.1731 19.25 12.1128 19.25 13.0926C19.25 17.4028 21.0972 18.6343 21.0972 18.6343H10.0139C10.0139 18.6343 11.8611 17.4028 11.8611 13.0926Z" stroke-width="1.32222" stroke-linecap="round" stroke-linejoin="round" stroke="#292C43"/>
+<path id="Vector_2" d="M14.5088 21.0972C14.6059 21.2917 14.7553 21.4554 14.9402 21.5697C15.125 21.6841 15.3382 21.7447 15.5556 21.7447C15.773 21.7447 15.9861 21.6841 16.171 21.5697C16.3559 21.4554 16.5052 21.2917 16.6023 21.0972" stroke-width="1.32222" stroke-linecap="round" stroke-linejoin="round" stroke="#292C43"/>
+</g>
+<circle id="Ellipse" cx="22.1666" cy="9.72168" r="2.72222" fill="#F26925" stroke-width="1.55556" stroke="white"/>
+</g>
+</svg>
